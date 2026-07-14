@@ -53,8 +53,8 @@ export const config: WebdriverIO.Config = {
     //
   capabilities: [{
       platformName: 'Android',
-    'appium:deviceName': 'Realme X3',
-    'appium:udid': '91829888',
+    'appium:deviceName': process.env.ANDROID_DEVICE_NAME || 'Realme X3',
+    'appium:udid': process.env.ANDROID_UDID || '91829888',
     'appium:automationName': 'UiAutomator2',
     'appium:appPackage': 'com.grandcinema.gcapp.screens',
     'appium:appActivity': '.MainActivity',
