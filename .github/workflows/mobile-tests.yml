@@ -1,0 +1,64 @@
+name: Mobile App Tests
+
+on:
+  workflow_dispatch:  # lets you trigger manually from GitHub's UI
+  # push:
+  #   branches: [ main ]  # uncomment later if you want auto-trigger on push
+
+jobs:
+  android-test:
+    runs-on: ubuntu-latest  # this runner HAS /dev/kvm available
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Enable KVM
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Install Appium + UiAutomator2 driver
+        run: |
+          npm install -g appium
+          npx appium driver install uiautomator2
+
+      - name: Run tests on Android Emulator
+        uses: reactivecircus/android-emulator-runner@v2
+        env:
+          # Point wdio.conf.ts at the emulator this action starts instead of
+          # the hardcoded physical device used for local runs.
+          ANDROID_DEVICE_NAME: Android Emulator
+          ANDROID_UDID: emulator-5554
+        with:
+          api-level: 30
+          target: google_apis
+          arch: x86_64
+          profile: pixel_6
+          script: |
+            appium &
+            sleep 5
+            adb install -r app/grandcinema.apk
+            npx wdio run wdio.conf.ts
+
+      - name: Upload test reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-reports
+          path: reports/
