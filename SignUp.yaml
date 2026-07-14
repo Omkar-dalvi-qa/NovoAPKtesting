@@ -1,0 +1,15 @@
+appId: com.grandcinema.gcapp.screens
+---
+- launchApp
+- tapOn: "Minions & Monsters\nPG\n20 Interested"
+- tapOn: "12:00 PM\n2D"
+- tapOn: "Confirm"
+- tapOn: "1"
+- tapOn: "Proceed"
+- tapOn: "Skip F&B"
+- assertVisible: "Promotion & Offers, Collapsed"
+
+
+
+
+

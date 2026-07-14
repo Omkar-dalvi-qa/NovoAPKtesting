@@ -1,0 +1,15 @@
+appId: com.grandcinema.gcapp.screens
+---
+- launchApp
+- tapOn:
+    text: ".*Interested.*"
+    index: 0
+- tapOn:
+    text: ".*2D.*"
+    index: 0
+- tapOn: "Confirm"
+- tapOn:
+    text: "8"
+- tapOn: "Proceed"
+- tapOn: "Skip F&B"
+- assertVisible: "Promotion & Offers, Collapsed"
